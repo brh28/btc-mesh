@@ -4,7 +4,7 @@ import sys
 
 args = sys.argv
 
-descriptor = bdk.Descriptor("wpkh(tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy/84h/0h/0h/0/*)", bdk.Network.TESTNET) 
+descriptor = bdk.Descriptor(args[2], bdk.Network.TESTNET) 
 db_config = bdk.DatabaseConfig.MEMORY()
 blockchain_config = bdk.BlockchainConfig.ELECTRUM(
     bdk.ElectrumConfig(

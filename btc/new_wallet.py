@@ -18,11 +18,11 @@ jsonOut = {
 }
 print(json.dumps(jsonOut, indent=2))
 
+extendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/0"))
+desc = bdk.Descriptor(f"wsh(pk({extendedKey.as_string()}))", bdk.Network.TESTNET)
 
+print(desc.as_string())
 # TODO
-# descStr = f"wsh(pk({extendedKey.as_string()}))"
-# desc = bdk.Descriptor(descStr, bdk.Network.TESTNET)
-# extendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/0"))
 # db_config = bdk.DatabaseConfig.MEMORY()
 # wallet = bdk.Wallet(
 #              descriptor=desc,
