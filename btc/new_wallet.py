@@ -11,6 +11,7 @@ prvKey = bdk.DescriptorSecretKey(
 
 pubKey = prvKey.as_public()
 
+# TODO - Persistence
 jsonOut = { 
     'mnemonic': m.as_string(), 
     'prvKey': prvKey.as_string(),
@@ -19,8 +20,9 @@ jsonOut = {
 print(json.dumps(jsonOut, indent=2))
 
 extendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/0"))
-desc = bdk.Descriptor(f"wsh(pk({extendedKey.as_string()}))", bdk.Network.TESTNET)
 
+
+desc = bdk.Descriptor(f"wsh(pk({extendedKey.as_string()}))", bdk.Network.TESTNET)
 print(desc.as_string())
 # TODO
 # db_config = bdk.DatabaseConfig.MEMORY()
