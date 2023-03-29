@@ -1,27 +1,40 @@
 import bdkpython as bdk
+import sys
 import json
 
-m = bdk.Mnemonic(bdk.WordCount.WORDS12)
+args = sys.argv
 
+m = bdk.Mnemonic(bdk.WordCount.WORDS12)
+net = bdk.Network.TESTNET
 prvKey = bdk.DescriptorSecretKey(
-    network=bdk.Network.TESTNET, 
+    network= net, 
     mnemonic=m,
     password=None
 )
 
-pubKey = prvKey.as_public()
+externalExtendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/0"))
+desc = bdk.Descriptor(f"wsh(pk({externalExtendedKey.as_string()}))", net)
+
+internalExtendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/1"))
+internalDesc = bdk.Descriptor(f"wsh(pk({internalExtendedKey.as_string()}))", net)
+
+# bdk.Descriptor("wpkh(tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy/84h/0h/0h/0/*)", net)
 
 jsonOut = { 
     'mnemonic': m.as_string(), 
     'prvKey': prvKey.as_string(),
-    'pubKey': pubKey.as_string()
+    'pubKey': prvKey.as_public().as_string(),
+    'descriptor': desc.as_string_private(),
+    'change_descriptor': internalDesc.as_string_private()
 }
-print(json.dumps(jsonOut, indent=2))
+out = json.dumps(jsonOut, indent=2)
+print(out)
 
-extendedKey = prvKey.derive(bdk.DerivationPath("m/84'/1'/0'/0"))
-desc = bdk.Descriptor(f"wsh(pk({extendedKey.as_string()}))", bdk.Network.TESTNET)
+f = open(args[1] + '.json', "w")
+f.write(out)
+f.close()
 
-print(desc.as_string())
+
 # TODO
 # db_config = bdk.DatabaseConfig.MEMORY()
 # wallet = bdk.Wallet(
