@@ -11,11 +11,20 @@ class SegmentStorage:
         self.__payloads = {}
         self.__transactionLookup = {}
 
+    # # hex string
+    # def get_raw_tx(self, segments):
+    #     raw_tx = ""
+    #     for segment in segments:
+    #         if segment.payload is not None:
+    #             raw_tx += segment.payload
+    #     return raw_tx
+
+    # uInt8
     def get_raw_tx(self, segments):
-        raw_tx = ""
+        raw_tx = []
         for segment in segments:
             if segment.payload is not None:
-                raw_tx += segment.payload
+                raw_tx.extend(segment.payload)
         return raw_tx
 
     def get(self, payload_id):

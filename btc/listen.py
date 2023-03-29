@@ -41,16 +41,15 @@ def onReceive(packet, interface): # called when a packet arrives
             tx_id = storage.get_transaction_id(s.payload_id)
             trx_segments = storage.get_by_transaction_id(tx_id)
             raw_tx = storage.get_raw_tx(trx_segments)
-            print(f"Broadcasting trx")
-            bdk_trx = bdk.Transaction(bytes.fromhex(raw_tx))
+            print(f"Broadcasting trx: {''.join(map(lambda x: format(x, '02x'), raw_tx))}")
+            bdk_trx = bdk.Transaction(raw_tx) # bytes.fromhex(
             blockchain.broadcast(bdk_trx)
-            print("done")
+            print(f"Successfully broadcasted: {tx_id}")
 
 def onConnection(interface, topic=pub.AUTO_TOPIC): # called when we (re)connect to the radio
     interface.sendText(f"Connected to device: {args[1]}") # defaults to broadcast, specify a destination ID if you wish
 
 pub.subscribe(onReceive, "meshtastic.receive") # could use meshtastic.receive.data.portnum to listen for specific events
-
 
 while True:
     time.sleep(1000)

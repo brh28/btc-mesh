@@ -30,7 +30,7 @@ import string
 
 class Segment:
 
-    def __init__(self, _id, payload, tx_hash=None, sequence_num=0, testnet=False, segment_count=None, block=None, message=False):
+    def __init__(self, _id, payload=None, tx_hash=None, sequence_num=0, testnet=False, segment_count=None, block=None, message=False):
         self.segment_count = segment_count
         self.tx_hash = tx_hash
         self.payload_id = _id
@@ -52,8 +52,11 @@ class Segment:
     def serialize(self):
         data = {
             "i": self.payload_id,
-            "t": self.payload
+            # "t": self.payload
         }
+
+        if self.payload:
+            data["t"] = self.payload
 
         if self.sequence_num > 0:
             data["c"] = self.sequence_num
@@ -161,7 +164,7 @@ class Segment:
 
         length = len(strRaw)
 
-        seg_count = 0
+        seg_count = 1
         if length <= mtu :
             seg_count = 1
         else :
@@ -174,7 +177,7 @@ class Segment:
         tx_id = messageIdx
 
         ret = []
-        for seg_num in range(0, int(seg_count)) :
+        for seg_num in range(0, int(seg_count) + 1) :
 
             if seg_num == 0 :
                 # if isZ85 :
@@ -188,10 +191,10 @@ class Segment:
                 tx_seg = strRaw
                 if seg_len > mtu :
                     seg_len = mtu
-                    tx_seg = strRaw[:seg_len]
-                    strRaw = strRaw[seg_len:]
+                    # tx_seg = strRaw[:seg_len]
+                    # strRaw = strRaw[seg_len:]
                 
-                rObj = Segment(_id, tx_seg, tx_hash=strHexTxHash, segment_count=int(seg_count), testnet=(network == 't'), message=(network == 'd'))
+                rObj = Segment(_id, None, tx_hash=strHexTxHash, segment_count=int(seg_count) + 1, testnet=(network == 't'), message=(network == 'd'))
                 ret.append(rObj)
 
             else :
